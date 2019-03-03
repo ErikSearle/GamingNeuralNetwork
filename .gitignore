@@ -106,3 +106,4 @@ venv.bak/
 #Dylan's ignores
 .pydevproject
 .project
+.settings
