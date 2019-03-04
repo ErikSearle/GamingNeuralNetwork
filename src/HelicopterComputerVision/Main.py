@@ -1,4 +1,6 @@
 import os
+import time
+from src.HelicopterComputerVision import ScreenCollector
 
 
 def start_firefox():
@@ -6,4 +8,5 @@ def start_firefox():
 
 
 if __name__ == '__main__':
-    start_firefox()
+    time.sleep(2)
+    ScreenCollector.find_helicopter_game()
