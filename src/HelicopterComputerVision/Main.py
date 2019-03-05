@@ -8,5 +8,5 @@ def start_firefox():
 
 
 if __name__ == '__main__':
-    time.sleep(2)
-    ScreenCollector.find_helicopter_game()
+    time.sleep(5)
+    ScreenCollector.get_screen_data()
