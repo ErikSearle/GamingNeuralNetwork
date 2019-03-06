@@ -1,7 +1,6 @@
 from fastgrab._linux_x11 import screenshot
 import numpy
 from matplotlib import pyplot as plt
-from time import time
 
 
 def get_screen_data():
@@ -9,21 +8,12 @@ def get_screen_data():
     Takes a screen shot and parses out the data from the screen shot into a usable format.
     :return: ([roof positions], [floor positions], y_position_of_helicopter, y_position_of_next_block)
     '''
-    start_time = time()
     img = numpy.zeros((509, 645, 4), 'uint8')
     screenshot(290, 184, img)
     ceiling_positions, floor_positions = get_ceiling_and_floor_positions(img)
-    print(time() - start_time)
-    show_image(img)
-
-    for i in range(len(ceiling_positions)):
-        print((ceiling_positions[i], floor_positions[i]))
-
     helicopter_position = get_helicopter_position(img, ceiling_positions[0][1], floor_positions[0][1])
-    print(helicopter_position)
-    # next_block_position = get_next_block_position(img)
-    # return (roof_positions, floor_positions, helicopter_position, next_block_position)
-    # print(roof_positions)
+    block_position = find_upcoming_block(img, ceiling_positions, floor_positions)
+    return ceiling_positions, floor_positions, helicopter_position, block_position
 
 
 def get_ceiling_and_floor_positions(img):
@@ -86,8 +76,34 @@ def get_helicopter_position(img, ceiling_value, floor_value):
             bottom_of_helicopter = y
             break
         y += 5
-    print(top_of_helicopter, bottom_of_helicopter)
     return (bottom_of_helicopter + top_of_helicopter) // 2
+
+
+def find_upcoming_block(img, ceiling_values, floor_values):
+    for column in range(len(ceiling_values)):
+        block = find_block_in_column(img, ceiling_values[column][0], ceiling_values[column][1], floor_values[column][1])
+        if block is not None:
+            return block
+    return None
+
+
+def find_block_in_column(img, x, ceiling_value, floor_value):
+    y = ceiling_value+50
+    while y < floor_value-50:
+        if numpy.array_equal(img[y][x], [102, 255, 102, 255]):
+            while numpy.array_equal(img[y][x], [102, 255, 102, 255]) or numpy.array_equal(img[y][x], [92, 230, 92, 255]):
+                y -= 5
+            top_of_block = y
+            bottom_of_block = y + 100
+
+            y += 20
+            while numpy.array_equal(img[y][x], [102, 255, 102, 255]) or numpy.array_equal(img[y][x], [92, 230, 92, 255]):
+                x -= 2
+            front_of_block = x
+
+            return top_of_block, bottom_of_block, front_of_block
+        y += 50
+    return None
 
 
 def show_image(img):
