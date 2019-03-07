@@ -10,7 +10,7 @@ To install TensorFlow and TFLearn use the following commands:
 pip install tensorflow
 pip install tflearn
 '''
-import numpy
+import numpy as np
 import tflearn
 from tflearn.layers.core import input_data, fully_connected, dropout
 from tflearn.layers.estimator import regression
@@ -31,18 +31,20 @@ class HelicopterNeuralNetwork:
         self.learning_rate = learning_rate
         self.filename = filename
 
-    def neural_network_model(self):
-        network = input_data(shape = [None, 4, 2], name = 'input')
-                                   
-        network = fully_connected(network, 10, activation='relu')   
-        
-        network = fully_connected(network, 10, activation='relu')  
-
+    #Builds the neural network.
+    def build_neural_network_model(self):
+        #Specifies the shape of our input data.
+        network = input_data(shape = [None, 4], name = 'input_shape')
+        #Creates fully connected layers.                  
+        network = fully_connected(network, 4, name = 'input_layer')   
+        network = fully_connected(network, 10, name = 'hidden_layer')
+        network = fully_connected(network, 1, name='output_layer')   
         network = regression(network, optimizer='adam', learning_rate=self.learning_rate, loss='mean_square', name='target')
 
-        nn_model = tflearn.DNN(network)
+        #Creates a deep neural network model.
+        network_model = tflearn.DNN(network)
         
-        return nn_model
+        return network_model
     
     '''The input of our neural network could consist of an array of 4 numbers:
 
@@ -51,30 +53,9 @@ class HelicopterNeuralNetwork:
     Is the ground directly below the helicopter (1-yes, 0-no)
     Suggested action (1 — ascend, 0 — descend)'''
     
-    def generate_training_date(self):
-        training_data = []
-        
-        '''for x in range(self.initial_games):
-            game = HelicopterGame()
-            prev_observation = self.generate_observation()
-            for y in range(self.goal_steps):
-                action = self.generate_action()
-                if done:
-                    #Need to figure out what the training data structure will be still.
-                    training_data.append([self.add_action_to_observation(prev_observation, action)])
-                    break
-                else:
-                    training_data.append([self.add_action_to_observation(prev_observation, action)])
-                    prev_observation = self.generate_observation()'''
-        
-        return training_data
 
     def train_model(self, training_data, model):
-        X = numpy.array([i[0] for i in training_data]).reshape(-1, 4, 1)
-        y = numpy.array([i[1] for i in training_data]).reshape(-1, 1)
-        model.fit(X,y, n_epoch = 1, shuffle = True, run_id = self.filename)
-        model.save(self.filename)
-        return model
+        model.fit()
  
 if __name__ == "__main__":
     HelicopterNeuralNetwork().train_model()                
