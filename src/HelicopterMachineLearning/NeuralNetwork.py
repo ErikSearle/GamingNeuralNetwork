@@ -45,13 +45,11 @@ class HelicopterNeuralNetwork:
         #Train our neural network model.
         network_model.fit(data, labels, show_metric=True)
         
-        #Here we need data from our game screen (as numpy array)...
-        screenshot_data = [[1,0,0,1,0], [1,0,0,1,0]]#...
         
         #Model prediction for given input data.
-        predicted_probability_of_action = network_model.predict(screenshot_data)
+        #predicted_probability_of_action = network_model.predict(screenshot_data)
         
-        print(predicted_probability_of_action[0][0])
+        #print(predicted_probability_of_action[0][0])
         
     #Builds the neural network.
     def build_neural_network_model(self):
