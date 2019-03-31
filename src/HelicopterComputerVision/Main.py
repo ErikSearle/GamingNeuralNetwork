@@ -9,4 +9,5 @@ def start_firefox():
 
 if __name__ == '__main__':
     time.sleep(5)
-    ScreenCollector.get_screen_data()
+    print(ScreenCollector.get_screen_data())
+
