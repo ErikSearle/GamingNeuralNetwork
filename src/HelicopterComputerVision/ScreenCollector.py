@@ -9,10 +9,16 @@ def get_screen_data():
     :return: ([roof positions], [floor positions], y_position_of_helicopter, y_position_of_next_block)
     '''
     img = numpy.zeros((509, 645, 4), 'uint8')
-    screenshot(290, 184, img)
-    ceiling_positions, floor_positions = get_ceiling_and_floor_positions(img)
-    helicopter_position = get_helicopter_position(img, ceiling_positions[0][1], floor_positions[0][1])
-    block_position = find_upcoming_block(img, ceiling_positions, floor_positions)
+    screenshot(289, 227, img)
+    ceiling_positions, floor_positions, helicopter_position, block_position = 0, 0, 0, 0
+    try:
+        ceiling_positions, floor_positions = get_ceiling_and_floor_positions(img)
+        helicopter_position = get_helicopter_position(img, ceiling_positions[0][1], floor_positions[0][1])
+        block_position = find_upcoming_block(img, ceiling_positions, floor_positions)
+    except IndexError as e:
+        print(e)
+        show_image(img)
+        exit(0)
     return ceiling_positions, floor_positions, helicopter_position, block_position
 
 

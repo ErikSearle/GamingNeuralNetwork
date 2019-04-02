@@ -22,17 +22,16 @@ def hover():
 
 # This function is called in order to make the helicopter go down to avoid obstacles
 def descend():
-    while not in_correct_position():
+    while Globals.current_y_position < Globals.desired_y_position:
         continue
 
 
 # This function is called in order to make the helicopter move up to avoid obstacles
 def ascend():
     mouseDown()
-    while not in_correct_position():
+    while Globals.current_y_position > Globals.desired_y_position:
         continue
     mouseUp()
-    return
 
 
 def fly():

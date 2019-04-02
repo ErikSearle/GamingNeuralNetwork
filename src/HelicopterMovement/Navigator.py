@@ -6,8 +6,9 @@ def update_helicopter_position():
     while True:
         screen_data = get_screen_data()
         Globals.current_y_position = screen_data[2]
+        print(Globals.current_y_position)
         if screen_data[3] is None:
-            Globals.desired_y_position = 296
+            Globals.desired_y_position = 253
         else:
             next_block_front = screen_data[3][2]
             index_of_ceiling_above_block = (next_block_front - 240) // 15
