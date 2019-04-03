@@ -1,6 +1,7 @@
 import os
 import time
 from src.HelicopterComputerVision import ScreenCollector
+from src.HelicopterMovement import Navigator, Globals
 
 
 def start_firefox():
@@ -9,7 +10,5 @@ def start_firefox():
 
 if __name__ == '__main__':
     time.sleep(5)
-    start_time = time.time()
-    for i in range(50):
-        print(ScreenCollector.get_screen_data())
-    print(time.time() - start_time)
+    Navigator.update_helicopter_position()
+    print(Globals.current_y_position, Globals.desired_y_position)
