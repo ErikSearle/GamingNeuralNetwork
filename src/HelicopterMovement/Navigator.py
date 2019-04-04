@@ -3,6 +3,12 @@ from src.HelicopterMovement import Globals
 
 
 def update_helicopter_position():
+    """
+    Asks the screen collector to provide the current information, and then updates the current and desired y positions
+    of the helicopter accordingly. Currently it's set up to fly based on only updating the desired y position once for
+    each block it encounters. The commented out sections show previous attempts.
+    :return: Nothing
+    """
     screen_data = get_screen_data()
     Globals.current_y_position = screen_data[2]
     if screen_data[3] is not None and (Globals.next_block_top is None or (Globals.next_block_top is not None and abs(Globals.next_block_top - screen_data[3][0]) > 5)):

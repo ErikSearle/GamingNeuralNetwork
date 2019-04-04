@@ -1,20 +1,14 @@
 from pyautogui import moveTo, mouseUp, mouseDown
 from time import sleep
 from src.HelicopterMovement import Globals
-
-
-# This is the main hover function for the helicopter
-# It should move in a relatively straight line with this
 from src.HelicopterMovement.Navigator import update_helicopter_position
 
 
 def hover():
-    '''
-    # Now, the helicopter game is weird. If we send it a million clicks per second it will freak out
-    # Therefore we do this thing where we pretend to hold the mouse button down for a bit and release
-    # This is not perfect and is ass but that is the best we got
-    # Feel free to tweak if necessary
-    '''
+    """
+    Method used to make the helicopter hover at a single y position. Method uses pulse width modulation to hover.
+    :return: Nothing
+    """
     while in_correct_position():
         update_helicopter_position()
         mouseDown()
@@ -23,8 +17,13 @@ def hover():
         sleep(0.003)
 
 
-# This function is called in order to make the helicopter go down to avoid obstacles
 def descend():
+    """
+    Method used to make the helicopter descend. The method does not simply release the mouse and allow the helicopter to
+    plummet, but instead uses an adjusted pulse width modulation to allow the helicopter to descend in a controlled way.
+     This was neccesary to stop the helicopter from constantly crashing into the floor of the cave.
+    :return: Nothing
+    """
     while Globals.current_y_position < Globals.desired_y_position:
         update_helicopter_position()
         mouseUp()
@@ -33,8 +32,12 @@ def descend():
         sleep(0.010)
 
 
-# This function is called in order to make the helicopter move up to avoid obstacles
 def ascend():
+    """
+    Method used to make the helicopter ascend. The method again does not simply hold down the mouse button. For the same
+    reason as descend, this help prevent the helicopter from flying into the ceiling.
+    :return: Nothing
+    """
     while Globals.current_y_position > Globals.desired_y_position:
         update_helicopter_position()
         mouseDown()
@@ -44,21 +47,28 @@ def ascend():
 
 
 def fly():
+    """
+    Move's the mouse to the middle of the helicopter game and then controls which of the three flying methods get called
+    in an infinite sequence to fly the helicopter.
+    :return: Nothing
+    """
     moveTo(450, 430)
     while True:
         update_helicopter_position()
         if Globals.desired_y_position - 5 > Globals.current_y_position:
-            # print("descend")
             descend()
         elif Globals.current_y_position - 5 > Globals.desired_y_position:
-            # print("ascend")
             ascend()
         else:
-            # print("hover", Globals.current_y_position, Globals.desired_y_position)
             hover()
 
 
 def in_correct_position():
+    """
+    A method used by the hover function to determine if the helicopters y position matches the helicopter's desired y
+    position.
+    :return: Nothing
+    """
     if abs(Globals.desired_y_position - Globals.current_y_position) > 5:
         return False
     else:
