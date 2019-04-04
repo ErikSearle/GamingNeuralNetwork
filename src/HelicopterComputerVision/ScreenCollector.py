@@ -9,10 +9,16 @@ def get_screen_data():
     :return: ([roof positions], [floor positions], y_position_of_helicopter, y_position_of_next_block)
     '''
     img = numpy.zeros((509, 645, 4), 'uint8')
-    screenshot(290, 184, img)
-    ceiling_positions, floor_positions = get_ceiling_and_floor_positions(img)
-    helicopter_position = get_helicopter_position(img, ceiling_positions[0][1], floor_positions[0][1])
-    block_position = find_upcoming_block(img, ceiling_positions, floor_positions)
+    screenshot(289, 227, img)
+    ceiling_positions, floor_positions, helicopter_position, block_position = 0, 0, 0, 0
+    try:
+        ceiling_positions, floor_positions = get_ceiling_and_floor_positions(img)
+        helicopter_position = get_helicopter_position(img, ceiling_positions[0][1], floor_positions[0][1])
+        block_position = find_upcoming_block(img, ceiling_positions, floor_positions)
+    except IndexError as e:
+        print(e)
+        show_image(img)
+        exit(0)
     return ceiling_positions, floor_positions, helicopter_position, block_position
 
 
@@ -80,6 +86,14 @@ def get_helicopter_position(img, ceiling_value, floor_value):
 
 
 def find_upcoming_block(img, ceiling_values, floor_values):
+    """
+    Using the floor and ceiling values already found, this method searches between the floor and ceiling to find the
+    next upcoming block
+    :param img: The image to be searched
+    :param ceiling_values: list of ceiling values
+    :param floor_values: list of floor values
+    :return: position of next block or None if there is no block found
+    """
     for column in range(len(ceiling_values)):
         block = find_block_in_column(img, ceiling_values[column][0], ceiling_values[column][1], floor_values[column][1])
         if block is not None:
@@ -88,6 +102,14 @@ def find_upcoming_block(img, ceiling_values, floor_values):
 
 
 def find_block_in_column(img, x, ceiling_value, floor_value):
+    """
+    Specifically searches a cloumn of pixels for a block
+    :param img: Image to be searched
+    :param x: x position of column
+    :param ceiling_value: ceiling value in column
+    :param floor_value: floor value in column
+    :return: position of block, or None if block doesn't exist
+    """
     y = ceiling_value+50
     while y < floor_value-50:
         if numpy.array_equal(img[y][x], [102, 255, 102, 255]):
@@ -107,6 +129,11 @@ def find_block_in_column(img, x, ceiling_value, floor_value):
 
 
 def show_image(img):
+    """
+    This method exists for debugging purposes. It allows captured images to be displayed in image magic.
+    :param img: The image to display
+    :return: nothing
+    """
     plt.imshow(img, interpolation='nearest')
     plt.imsave("helicopter.png", img)
     plt.show()
